@@ -7,10 +7,21 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         beers: [],
+        droppedBeers: [],
+        editedBeers: {},
     },
     mutations: {
         SET_BEERS: (state, beers) => {
             state.beers = beers;
+        },
+        ADD_DROPPED_BEERS: (state, id) => {
+            state.droppedBeers.push(id);
+        },
+        ADD_BEERS_CHANGES: (state, input) => {
+            state.editedBeers[input.id] = {
+                newName: input.newName,
+                newDescription: input.newDescription
+            };
         }
     },
     actions: {
@@ -25,11 +36,26 @@ const store = new Vuex.Store({
                     console.log(error);
                     return error;
                 });
-        }
+        },
+        DROP_BEER({commit}, id) {
+            commit('ADD_DROPPED_BEERS', id);
+            return id;
+        },
+        EDIT_BEER({commit}, input) {
+            commit('ADD_BEERS_CHANGES', input);
+            return input;
+        },
+
     },
     getters: {
         BEERS(state) {
             return state.beers;
+        },
+        DROPPED_BEERS(state) {
+            return state.droppedBeers;
+        },
+        EDITED_BEERS(state) {
+            return state.editedBeers;
         }
     }
 })

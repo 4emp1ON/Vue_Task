@@ -1,27 +1,37 @@
 <template>
-  <div id="app">
-    <Beers />
-  </div>
+    <v-app>
+        <v-container>
+            <v-app-bar
+                    app
+                    color="primary"
+                    dark
+            >
+                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                <v-toolbar-title>Beers</v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+            </v-app-bar>
+
+            <v-main>
+                <BeersCatalog/>
+            </v-main>
+        </v-container>
+    </v-app>
 </template>
 
 <script>
-import Beers from './components/Beers.vue'
+    import BeersCatalog from './components/BeersCatalog';
 
-export default {
-  name: 'App',
-  components: {
-    Beers
-  }
-}
+    export default {
+        name: 'App',
+
+        components: {
+            BeersCatalog,
+        },
+
+        data: () => ({
+            //
+        }),
+    };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
