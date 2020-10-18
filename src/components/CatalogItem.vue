@@ -25,7 +25,7 @@
                     class="mt-3"
                     contain
                     max-height="200"
-                    :src="beer_data.image_url"
+                    :src="beer_data.image_url ? beer_data.image_url : 'https://via.placeholder.com/200.png'"
             ></v-img>
 
             <v-card-title>{{ beer_data.name }}</v-card-title>
@@ -94,10 +94,10 @@
                 "EDIT_BEER"
             ]),
             showPopup() {
-                this.isInfoPopupVisible = true;
+                this.isPopupVisible = true;
             },
             closePopup() {
-                this.isInfoPopupVisible = false;
+                this.isPopupVisible = false;
             },
             saveChanges(changes) {
                 const {name, description} = changes;

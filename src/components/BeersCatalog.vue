@@ -8,9 +8,13 @@
                     :beer_data="beer"
             />
         </div>
-        <loading :active.sync="isLoading"
-                 :is-full-page="fullPage"></loading>
-        <v-btn @click="nextPage" v-if="!lastPage && !isLoading">Show next</v-btn>
+        <loading :active.sync="isLoading" />
+        <v-btn @click="nextPage"
+               v-if="!this.lastPage && this.showNextButton"
+               :disabled = "isLoading"
+        >
+            {{ this.isLoading ? 'Loading' : 'Show next' }}
+        </v-btn>
     </div>
 </template>
 
@@ -28,10 +32,10 @@
         },
         data() {
             return {
-                currentPage: 1,
+                currentPage: 12,
                 lastPage: false,
                 isLoading: true,
-                fullPage: true
+                showNextButton: false
             }
         },
         methods: {
@@ -40,10 +44,12 @@
             ]),
             async nextPage() {
                 this.isLoading = true;
-                this.currentPage++;
-                await this.GET_BEERS_FROM_API(this.currentPage)
-                    .then(() => this.isLoading = false);
-                await this.nextPageExists();
+                setTimeout(() => {
+                    this.currentPage++;
+                    this.GET_BEERS_FROM_API(this.currentPage)
+                        .then(() => this.isLoading = false);
+                    this.nextPageExists();
+                }, 1000)
             },
             nextPageExists() {
                 const nextPage = this.currentPage + 1;
@@ -76,8 +82,13 @@
         },
 
         mounted() {
-            this.GET_BEERS_FROM_API(this.currentPage).then(() => this.isLoading = false)
-            this.nextPageExists();
+            setTimeout(() => {
+                this.GET_BEERS_FROM_API(this.currentPage).then(() => {
+                    this.isLoading = false
+                    this.showNextButton = true
+                })
+                this.nextPageExists();
+            }, 2000)
         }
 
     }
