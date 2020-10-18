@@ -1,7 +1,7 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper d-flex flex-column">
         <Popup
-                v-if="isInfoPopupVisible"
+                v-if="isPopupVisible"
                 rightBtnTitle="Save"
                 :beerId="beer_data.id"
                 :beerName="beer_data.name"
@@ -10,7 +10,7 @@
                 @saveChanges="saveChanges"
         />
         <v-card
-                class="mx-auto my-12 d-flex flex-column"
+                class="mx-auto my-12"
                 max-width="374"
         >
             <template slot="progress">
@@ -52,7 +52,7 @@
                         text
                         @click="DROP_BEER(beer_data.id)"
                 >
-                    Drop
+                    Delete
                 </v-btn>
                 <v-btn
                         color="deep-purple lighten-2"
@@ -85,7 +85,7 @@
         },
         data() {
             return {
-                isInfoPopupVisible: false
+                isPopupVisible: false
             }
         },
         methods: {
@@ -103,7 +103,7 @@
                 const {name, description} = changes;
                 const beerId = this.beer_data.id;
                 const data = {
-                    id : beerId,
+                    id: beerId,
                     newName: name,
                     newDescription: description,
                 }

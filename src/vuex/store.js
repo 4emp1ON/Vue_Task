@@ -14,6 +14,9 @@ const store = new Vuex.Store({
         SET_BEERS: (state, beers) => {
             state.beers = beers;
         },
+        ADD_BEERS: (state, beers) => {
+            state.beers.push(...beers);
+        },
         ADD_DROPPED_BEERS: (state, id) => {
             state.droppedBeers.push(id);
         },
@@ -29,7 +32,9 @@ const store = new Vuex.Store({
             axios
                 .get(`https://api.punkapi.com/v2/beers?page=${page}&limit=25`)
                 .then((res) => {
-                    commit('SET_BEERS', res.data)
+                    commit(
+                        page === 1 ? 'SET_BEERS' : 'ADD_BEERS',
+                        res.data)
                     return res;
                 })
                 .catch(error => {
@@ -47,7 +52,8 @@ const store = new Vuex.Store({
         },
 
     },
-    getters: {
+    getters:
+    {
         BEERS(state) {
             return state.beers;
         },
