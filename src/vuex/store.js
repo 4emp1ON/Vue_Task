@@ -21,10 +21,12 @@ const store = new Vuex.Store({
             state.droppedBeers.push(id);
         },
         ADD_BEERS_CHANGES: (state, input) => {
-            state.editedBeers[input.id] = {
-                newName: input.newName,
-                newDescription: input.newDescription
-            };
+            Vue.set(
+                state.editedBeers,
+                input.id, {
+                    newName: input.newName,
+                    newDescription: input.newDescription
+                })
         }
     },
     actions: {
@@ -38,7 +40,6 @@ const store = new Vuex.Store({
                     return res;
                 })
                 .catch(error => {
-                    console.log(error);
                     return error;
                 });
         },
@@ -53,17 +54,25 @@ const store = new Vuex.Store({
 
     },
     getters:
-    {
-        BEERS(state) {
-            return state.beers;
-        },
-        DROPPED_BEERS(state) {
-            return state.droppedBeers;
-        },
-        EDITED_BEERS(state) {
-            return state.editedBeers;
+        {
+            BEERS(state) {
+                return state.beers;
+            },
+            BEERS_VIEW(state) {
+                return state.beers
+                    .filter(b => !state.droppedBeers.includes(b.id))
+                    .map(b => {
+                        const edited = state.editedBeers[b.id];
+                        return edited ? {...b, name: edited.newName, description: edited.newDescription} : b;
+                    });
+            },
+            DROPPED_BEERS(state) {
+                return state.droppedBeers;
+            },
+            EDITED_BEERS(state) {
+                return state.editedBeers;
+            }
         }
-    }
 })
 
 export default store;

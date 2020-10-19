@@ -3,18 +3,14 @@
         <h1>Catalog</h1>
         <div class="v-catalog__list">
             <catalog-item
-                    v-for="beer in actualBeers"
+                    v-for="beer in BEERS_VIEW"
                     :key="beer.id"
                     :beer_data="beer"
             />
         </div>
-        <loading :active.sync="isLoading" />
-        <v-btn @click="nextPage"
-               v-if="!this.lastPage && this.showNextButton"
-               :disabled = "isLoading"
-        >
-            {{ this.isLoading ? 'Loading' : 'Show next' }}
-        </v-btn>
+        <loading :active.sync="isLoading"
+                 :is-full-page="fullPage"></loading>
+        <v-btn @click="nextPage" v-if="!lastPage && !isLoading">Show next</v-btn>
     </div>
 </template>
 
@@ -32,10 +28,10 @@
         },
         data() {
             return {
-                currentPage: 12,
+                currentPage: 1,
                 lastPage: false,
                 isLoading: true,
-                showNextButton: false
+                fullPage: true,
             }
         },
         methods: {
@@ -44,12 +40,10 @@
             ]),
             async nextPage() {
                 this.isLoading = true;
-                setTimeout(() => {
-                    this.currentPage++;
-                    this.GET_BEERS_FROM_API(this.currentPage)
-                        .then(() => this.isLoading = false);
-                    this.nextPageExists();
-                }, 1000)
+                this.currentPage++;
+                await this.GET_BEERS_FROM_API(this.currentPage)
+                    .then(() => this.isLoading = false);
+                await this.nextPageExists();
             },
             nextPageExists() {
                 const nextPage = this.currentPage + 1;
@@ -60,35 +54,25 @@
                             this.lastPage = true;
                         }
                     });
-            }
+            },
         },
         computed: {
             ...mapGetters([
                 'BEERS',
+                'BEERS_VIEW',
                 'DROPPED_BEERS',
                 'EDITED_BEERS'
             ]),
             actualBeers() {
-                let beers = this.BEERS.filter(beer => !this.DROPPED_BEERS.includes(beer.id));
-                beers.map((beer) => {
-                    if (this.EDITED_BEERS[beer.id]) {
-                        beer.name = this.EDITED_BEERS[beer.id].newName;
-                        beer.description = this.EDITED_BEERS[beer.id].newDescription;
-                    }
-                });
-
-                return beers;
+                return this.BEERS_VIEW;
             },
         },
 
         mounted() {
             setTimeout(() => {
-                this.GET_BEERS_FROM_API(this.currentPage).then(() => {
-                    this.isLoading = false
-                    this.showNextButton = true
-                })
+                this.GET_BEERS_FROM_API(this.currentPage).then(() => this.isLoading = false)
                 this.nextPageExists();
-            }, 2000)
+            }, 1000);
         }
 
     }

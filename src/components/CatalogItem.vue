@@ -1,5 +1,6 @@
 <template>
-    <div class="wrapper d-flex flex-column">
+    <div class="wrapper d-flex flex-column"
+         :key="componentKey">
         <Popup
                 v-if="isPopupVisible"
                 rightBtnTitle="Save"
@@ -25,7 +26,7 @@
                     class="mt-3"
                     contain
                     max-height="200"
-                    :src="beer_data.image_url ? beer_data.image_url : 'https://via.placeholder.com/200.png'"
+                    :src="beer_data.image_url"
             ></v-img>
 
             <v-card-title>{{ beer_data.name }}</v-card-title>
@@ -85,7 +86,8 @@
         },
         data() {
             return {
-                isPopupVisible: false
+                isPopupVisible: false,
+                componentKey: 0,
             }
         },
         methods: {
@@ -107,8 +109,11 @@
                     newName: name,
                     newDescription: description,
                 }
-                this.EDIT_BEER(data);
+                this.EDIT_BEER(data).then(() => this.forceRerender());
             },
+            forceRerender() {
+                this.componentKey += 1;
+            }
         }
     }
 </script>
